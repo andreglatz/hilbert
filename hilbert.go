@@ -5,25 +5,25 @@ import (
 	"time"
 )
 
-type Cache interface {
-	Set(key string, value interface{}, ttl time.Duration)
-	Get(key string) (interface{}, bool)
+type Cache[T any] interface {
+	Set(key string, value T, ttl time.Duration)
+	Get(key string) (T, bool)
 }
 
-type cache struct {
-	items map[string]interface{}
+type cache[T any] struct {
+	items map[string]T
 	mu    sync.RWMutex
 }
 
-var _ Cache = &cache{}
+var _ Cache[any] = &cache[any]{}
 
-func New() Cache {
-	return &cache{
-		items: make(map[string]interface{}),
+func New[T any]() Cache[T] {
+	return &cache[T]{
+		items: make(map[string]T),
 	}
 }
 
-func (c *cache) Set(key string, value interface{}, ttl time.Duration) {
+func (c *cache[T]) Set(key string, value T, ttl time.Duration) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -31,7 +31,7 @@ func (c *cache) Set(key string, value interface{}, ttl time.Duration) {
 	go c.remove(key, ttl)
 }
 
-func (c *cache) remove(key string, ttl time.Duration) {
+func (c *cache[T]) remove(key string, ttl time.Duration) {
 	time.Sleep(ttl)
 
 	c.mu.Lock()
@@ -40,7 +40,7 @@ func (c *cache) remove(key string, ttl time.Duration) {
 	delete(c.items, key)
 }
 
-func (c *cache) Get(key string) (interface{}, bool) {
+func (c *cache[T]) Get(key string) (T, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 

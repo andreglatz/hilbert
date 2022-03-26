@@ -1,3 +1,3 @@
 module github.com/andreglatz/hilbert
 
-go 1.17
+go 1.18
