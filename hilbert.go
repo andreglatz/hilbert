@@ -34,7 +34,9 @@ func (c *cache[T]) Set(key string, value T, ttl ...time.Duration) {
 		ttl = []time.Duration{c.ttl}
 	}
 
-	go c.remove(key, ttl[0])
+	if ttl[0] != -1 {
+		go c.remove(key, ttl[0])
+	}
 }
 
 func (c *cache[T]) remove(key string, ttl time.Duration) {

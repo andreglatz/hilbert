@@ -7,4 +7,4 @@ type Cache[T any] interface {
 	Get(key string) (T, bool)
 }
 
-const DefaultTTL time.Duration = 0
+const DefaultTTL time.Duration = -1
