@@ -83,5 +83,4 @@ func (c *cache[T]) Clear() {
 		item.timer.Stop()
 		delete(c.items, key)
 	}
-
 }
